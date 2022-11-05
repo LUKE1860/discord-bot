@@ -1,6 +1,3 @@
-
-use std::vec;
-
 /* 
 use serenity::async_trait;
 use serenity::model::channel::Message;
@@ -171,6 +168,7 @@ for _ in 0..=x{
 let cache=ctx.cache.current_user_id();
 msg.channel_id.say(&ctx.http,cache.name).await?;
 */
+mod env;
 use serenity::framework::standard::macros::{command, group, hook};
 use serenity::framework::standard::{CommandResult, StandardFramework, Command, Args, Delimiter, CommonOptions};
 use serenity::model::channel::Message;
@@ -248,19 +246,25 @@ let b=msg.member(&ctx.http).await?;
 
 Ok(())
 }
+#[command]
+async fn hello(ctx:&Context,msg:&Message)->CommandResult{
+msg.channel_id.say(&ctx.http, "\u{0058}\u{0044}").await?;
+Ok(())
+}
 #[group]
-#[commands(ban,unban,clear,info,kick,mute)]
+#[commands(ban,unban,clear,info,kick,mute,hello)]
 struct General;
 struct Handler;
 impl EventHandler for Handler{}
-const TOKEN:&str="OTkzNzkyNTkxMTc2OTMzMzk3.GLgILp.2qSo0xDzLQwqarM-2cMAao36kx4kbxpeeMqJaY";
 #[tokio::main]
 async fn main(){
+let a=env::EnvGet::setup().env().unwrap();
+let token=a.trim();
 let framework=StandardFramework::new()
 .configure(|c|c.prefix("%")).group(&GENERAL_GROUP);
 let intents=GatewayIntents::DIRECT_MESSAGES|GatewayIntents::GUILD_BANS|GatewayIntents::GUILD_MEMBERS|GatewayIntents::MESSAGE_CONTENT
 |GatewayIntents::GUILD_MESSAGES|GatewayIntents::GUILDS;
-let mut client=Client::builder(&TOKEN,intents).event_handler(Handler).framework(framework).await.expect("error!");
+let mut client=Client::builder(&token,intents).event_handler(Handler).framework(framework).await.expect("error!");
 if let Err(why)=client.start().await{
 println!("Client Error:{:?}",why);
 }
