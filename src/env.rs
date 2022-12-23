@@ -15,8 +15,8 @@ a.push("src");
 a.push(".env");
 let mut m = File::open(a)?;
     let mut s = String::new();
-    let r = m.read_to_string(&mut s)?;
-    let mut h:Vec<&str>=s.split_inclusive("=").collect();
+    let _r = m.read_to_string(&mut s)?;
+    let h:Vec<&str>=s.split_inclusive("=").collect();
     let g=h.get(1).unwrap();
     let l=String::from(*g);
     Ok(l)
